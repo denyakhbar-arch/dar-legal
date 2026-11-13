@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kantor Advokat & Konsultan Hukum Deny Akhbar, S.H., M.H. & Rekan</title>
+  <meta name="description" content="Layanan Konsultasi Hukum Online, Advokasi Litigasi & Non-Litigasi, Pendampingan Korporasi, dan Bantuan Hukum Pro Bono Terpercaya.">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#991B1B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Advokat Deny Akhbar">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase Auth & Google Sign-In SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* Inline critical CSS fallback ensuring page never renders blank */
+    :root {
+      --primary-burgundy: #991b1b;
+      --dark-burgundy: #7f1d1d;
+      --deep-navy: #0b1528;
+      --surface-navy: #152238;
+      --gold-accent: #d97706;
+      --light-blue-bg: #f0f7ff;
+      --corp-primary: #0284c7;
+      --corp-surface: #e0f2fe;
+      --corp-border: #bae6fd;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --emerald-success: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--light-blue-bg); color: var(--text-main); line-height: 1.6; min-height: 100vh; }
+    .container { width: 92%; max-width: 1200px; margin: 0 auto; }
+    .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 21, 40, 0.78); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-backdrop.active { display: flex; }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================= -->
+  <!-- VIEW 1: PUBLIC GUEST LEGAL PORTAL (STRICTLY NO COMPANY NAME) -->
+  <!-- ========================================================= -->
+  <div id="publicLegalPortal">
+    <!-- Top Announcement Bar -->
+    <div class="top-announcement">
+      <div class="container top-bar-content">
+        <span><i class="fa-solid fa-scale-balanced"></i> Kantor Advokat Resmi Terdaftar Kemenkumham &amp; PERADI • Akreditasi Grade A</span>
+        <div class="top-contacts">
+          <a href="mailto:denyakhbar@gmail.com"><i class="fa-solid fa-envelope"></i> denyakhbar@gmail.com</a>
+          <a href="https://wa.me/6281299990001" target="_blank"><i class="fa-brands fa-whatsapp"></i> Hotline 0812-9999-0001</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="main-header">
+      <div class="container nav-container">
+        <div class="brand">
+          <div class="brand-badge">
+            <i class="fa-solid fa-gavel"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-sub">KANTOR HUKUM &amp; ADVOKAT</span>
+            <h1 class="brand-title">DENY AKHBAR, S.H., M.H. &amp; REKAN</h1>
+          </div>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#profil" onclick="scrollToSection('profil')" class="active">Profil Advokat</a>
+          <a href="#konsultasi" onclick="scrollToSection('konsultasi')">Konsultasi Online</a>
+          <a href="#bantuan-hukum" onclick="scrollToSection('bantuan-hukum')">Bantuan Hukum</a>
+          <a href="#mitra" onclick="scrollToSection('mitra')">Mitra Rekanan</a>
+          <a href="#testimoni" onclick="scrollToSection('testimoni')">Testimoni Klien</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="btn-download-nav" onclick="openDownloadModal()">
+            <i class="fa-solid fa-cloud-arrow-down"></i> Unduh Aplikasi
+          </button>
+          <button id="btnPublicLoginHeader" class="btn-login-public" onclick="openPublicLoginModal()">
+            <i class="fa-brands fa-google"></i> Login Publik
+          </button>
+          <button class="btn-login-corp" onclick="openCorpLoginModal()">
+            <i class="fa-solid fa-building-user"></i> Login Perusahaan
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Public Google Sign-In Status / Invitation Strip -->
+    <div id="publicGoogleBanner" class="public-google-banner">
+      <div class="container public-google-inner">
+        <div class="pg-info">
+          <div class="pg-icon"><i class="fa-brands fa-google"></i></div>
+          <div>
+            <strong id="pgBannerTitle">Masuk Publik Terintegrasi Akun Google Pengunjung</strong>
+            <p id="pgBannerSubtitle">Silakan masuk dengan akun Google Anda untuk mengajukan konsultasi hukum, bantuan pro bono, dan melacak balasan advokat secara personal.</p>
+          </div>
+        </div>
+        <div class="pg-actions">
+          <button id="pgBannerLoginBtn" class="btn-google-signin" onclick="openPublicLoginModal()">
+            <i class="fa-brands fa-google"></i> Masuk dengan Google
+          </button>
+          <button id="pgBannerLogoutBtn" class="btn-google-logout" style="display:none;" onclick="logoutPublicGoogle()">
+            <i class="fa-solid fa-right-from-bracket"></i> Keluar Akun Publik
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-text">
+          <span class="hero-pill"><i class="fa-solid fa-shield-halved"></i> Penasihat Hukum Senior &amp; Konsultan Korporasi</span>
+          <h2>Perlindungan Hukum Presisi, Solusi Sengketa Tepat, dan Keadilan untuk Anda.</h2>
+          <p>
+            Melayani konsultasi hukum online, penanganan sengketa perdata, pidana, sengketa bisnis &amp; agraria,
+            audit kepatuhan hukum kontrak, serta pendampingan pro bono bagi masyarakat dan mitra kerja.
+          </p>
+
+          <!-- Prominent Download Buttons on Front Page -->
+          <div class="hero-download-box">
+            <div class="download-label">
+              <i class="fa-solid fa-mobile-screen-button"></i> Tersedia di Seluruh Smartphone &amp; Browser Publik
+            </div>
+            <div class="download-buttons">
+              <button class="btn-download android" onclick="downloadAndroidApk()">
+                <div class="btn-icon"><i class="fa-brands fa-android"></i></div>
+                <div class="btn-text">
+                  <span class="sub">Unduh File Installer</span>
+                  <span class="main">Untuk Android (.APK)</span>
+                </div>
+              </button>
+
+              <button class="btn-download ios" onclick="downloadIosProfile()">
+                <div class="btn-icon"><i class="fa-brands fa-apple"></i></div>
+                <div class="btn-text">
+                  <span class="sub">Instal WebClip / PWA</span>
+                  <span class="main">Untuk iPhone / iOS</span>
+                </div>
+              </button>
+            </div>
+            <div class="download-help">
+              <a href="javascript:void(0)" onclick="openDownloadGuide()">
+                <i class="fa-solid fa-circle-question"></i> Panduan Membuka &amp; Menginstal Berkas Unduhan
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="lawyer-card-inner">
+            <div class="lawyer-badge"><i class="fa-solid fa-medal"></i> Managing Partner</div>
+            <div class="lawyer-avatar">
+              <span>DA</span>
+            </div>
+            <h3>Deny Akhbar, S.H., M.H.</h3>
+            <p class="lawyer-role">Advokat, Kurator &amp; Konsultan Hukum Perusahaan</p>
+            <div class="lawyer-credentials">
+              <div class="cred-item">
+                <strong>Izin Beracara:</strong> PERADI/2014/DKI-0988
+              </div>
+              <div class="cred-item">
+                <strong>Pengalaman:</strong> 15+ Tahun Praktik Litigasi
+              </div>
+              <div class="cred-item">
+                <strong>Spesialisasi:</strong> Sengketa Kontrak, Korporasi &amp; Agraria
+              </div>
+            </div>
+            <button class="btn-primary-consult" onclick="scrollToSection('konsultasi')">
+              <i class="fa-solid fa-calendar-check"></i> Buat Jadwal Konsultasi Online
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Statistics -->
+    <section class="stats-bar">
+      <div class="container stats-grid">
+        <div class="stat-item">
+          <h3>500+</h3>
+          <p>Perkara Sukses Ditangani</p>
+        </div>
+        <div class="stat-item">
+          <h3>100%</h3>
+          <p>Kerahasiaan Klien Terjamin</p>
+        </div>
+        <div class="stat-item">
+          <h3>Grade A</h3>
+          <p>Akreditasi Bantuan Hukum</p>
+        </div>
+        <div class="stat-item">
+          <h3>24/7</h3>
+          <p>Respon Jalur Darurat Hukum</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Legal Portal Services Section -->
+    <main class="container main-content-wrapper">
+      <!-- Tab Buttons -->
+      <div class="tabs-nav-bar">
+        <button class="tab-btn active" onclick="switchPortalTab('profil')">
+          <i class="fa-solid fa-user-tie"></i> Profil Tim Advokat
+        </button>
+        <button class="tab-btn" onclick="switchPortalTab('konsultasi')">
+          <i class="fa-solid fa-file-signature"></i> Formulir Konsultasi Online
+        </button>
+        <button class="tab-btn" onclick="switchPortalTab('bantuan-hukum')">
+          <i class="fa-solid fa-hand-holding-heart"></i> Permohonan Bantuan Hukum
+        </button>
+        <button class="tab-btn" onclick="switchPortalTab('mitra')">
+          <i class="fa-solid fa-handshake"></i> Kemitraan Advokat Rekanan
+        </button>
+        <button class="tab-btn" onclick="switchPortalTab('testimoni')">
+          <i class="fa-solid fa-star"></i> Testimoni Klien
+        </button>
+        <button id="tabBtnMySubmissions" class="tab-btn" onclick="switchPortalTab('riwayat-publik')" style="display:none;">
+          <i class="fa-solid fa-folder-open"></i> Riwayat Pengajuan Saya
+        </button>
+      </div>
+
+      <!-- TAB 1: Profil Tim Advokat -->
+      <section id="tab-profil" class="portal-tab-content active">
+        <div class="section-heading">
+          <h2>Dewan Advokat &amp; Konsultan Hukum Senior</h2>
+          <p>Keahlian komprehensif untuk mendampingi urusan hukum perseorangan, UMKM, maupun perseroan terbatas.</p>
+        </div>
+
+        <div class="advocates-grid">
+          <div class="advocate-card highlight">
+            <div class="adv-header">
+              <div class="adv-avatar main-lead">DA</div>
+              <div>
+                <h3>Deny Akhbar, S.H., M.H.</h3>
+                <span class="adv-title">Lead Corporate Counsel &amp; Managing Partner</span>
+              </div>
+            </div>
+            <div class="adv-body">
+              <p><strong>Izin Beracara:</strong> PERADI/2014/DKI-0988</p>
+              <p><strong>Spesialisasi:</strong> Sengketa Kontrak Dagang, Hukum Agraria &amp; Perlindungan Tenaga Kerja</p>
+              <p><strong>Email Langsung:</strong> <a href="mailto:denyakhbar@gmail.com">denyakhbar@gmail.com</a></p>
+              <span class="experience-badge"><i class="fa-solid fa-award"></i> 15+ Tahun Pengalaman Praktik</span>
+            </div>
+          </div>
+
+          <div class="advocate-card">
+            <div class="adv-header">
+              <div class="adv-avatar">SH</div>
+              <div>
+                <h3>Surya Hamdani, S.H., M.H.</h3>
+                <span class="adv-title">Senior Litigator &amp; Mediator Perdata</span>
+              </div>
+            </div>
+            <div class="adv-body">
+              <p><strong>Izin Beracara:</strong> PERADI/2018/JBR-0412</p>
+              <p><strong>Spesialisasi:</strong> Mediasi Perbankan, Sengketa Tanah &amp; Eksekusi Jaminan Fidusia</p>
+              <span class="experience-badge"><i class="fa-solid fa-award"></i> 9 Tahun Pengalaman</span>
+            </div>
+          </div>
+
+          <div class="advocate-card">
+            <div class="adv-header">
+              <div class="adv-avatar">RW</div>
+              <div>
+                <h3>Ratna Wulandari, S.H., LL.M.</h3>
+                <span class="adv-title">Konsultan Kontrak Internasional &amp; HAKI</span>
+              </div>
+            </div>
+            <div class="adv-body">
+              <p><strong>Izin Beracara:</strong> PERADI/2020/JKT-1190</p>
+              <p><strong>Spesialisasi:</strong> Ekspor Impor, Merek Dagang &amp; Perlindungan Data Pribadi</p>
+              <span class="experience-badge"><i class="fa-solid fa-award"></i> 7 Tahun Pengalaman</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Formulir Konsultasi Online -->
+      <section id="tab-konsultasi" class="portal-tab-content">
+        <div class="section-heading">
+          <h2>Formulir Pengajuan Konsultasi Hukum</h2>
+          <p>Sampaikan pertanyaan atau kebutuhan pendampingan Anda secara langsung ke meja kerja advokat.</p>
+        </div>
+
+        <div class="form-container-card">
+          <form id="consultationForm" onsubmit="handleConsultationSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c_name">Nama Lengkap Pemohon *</label>
+                <input type="text" id="c_name" required placeholder="Contoh: Budi Prasetyo">
+              </div>
+              <div class="form-group">
+                <label for="c_org">Nama Instansi / Usaha (Opsional)</label>
+                <input type="text" id="c_org" placeholder="Perorangan / Badan Usaha">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c_email">Alamat Email *</label>
+                <input type="email" id="c_email" required placeholder="email@contoh.com">
+              </div>
+              <div class="form-group">
+                <label for="c_phone">Nomor WhatsApp Aktif *</label>
+                <input type="tel" id="c_phone" required placeholder="0812xxxxxxxx">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c_topic">Topik / Bidang Permasalahan *</label>
+                <select id="c_topic" required>
+                  <option value="Sengketa Kontrak & Perjanjian Kerja Sama">Sengketa Kontrak &amp; Perjanjian Kerja Sama</option>
+                  <option value="Hukum Ketenagakerjaan & Perselisihan Hubungan Industrial">Hukum Ketenagakerjaan &amp; Hubungan Industrial</option>
+                  <option value="Hukum Pertanahan & Sengketa Agraria">Hukum Pertanahan &amp; Sengketa Agraria</option>
+                  <option value="Pendampingan Perkara Pidana / Laporan Polisi">Pendampingan Perkara Pidana / Laporan Polisi</option>
+                  <option value="Legalitas Usaha, Pajak & Hak Cipta / Merek">Legalitas Usaha, Pajak &amp; Merek Dagang</option>
+                  <option value="Lainnya">Konsultasi Umum Lainnya</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="c_date">Waktu Konsultasi Yang Diharapkan</label>
+                <input type="text" id="c_date" placeholder="Contoh: Senin Depan, Pukul 14.00 WIB">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="c_brief">Uraian Pokok Masalah / Pertanyaan Hukum *</label>
+              <textarea id="c_brief" rows="4" required placeholder="Jelaskan kronologi singkat atau dokumen yang ingin ditinjau..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit-legal">
+                <i class="fa-solid fa-paper-plane"></i> Kirim Permohonan Konsultasi
+              </button>
+              <span class="privacy-notice"><i class="fa-solid fa-lock"></i> Dijamin Kerahasiaan Advokat-Klien Sesuai UU No. 18 Tahun 2003</span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 3: Permohonan Bantuan Hukum -->
+      <section id="tab-bantuan-hukum" class="portal-tab-content">
+        <div class="section-heading">
+          <h2>Layanan Bantuan Hukum (Pro Bono &amp; Advokasi)</h2>
+          <p>Dukungan perlindungan hukum tanpa diskriminasi bagi masyarakat yang membutuhkan keadilan.</p>
+        </div>
+
+        <div class="form-container-card">
+          <form id="legalAidForm" onsubmit="handleLegalAidSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="a_name">Nama Pemohon / Perwakilan Warga *</label>
+                <input type="text" id="a_name" required placeholder="Nama lengkap">
+              </div>
+              <div class="form-group">
+                <label for="a_contact">Nomor Kontak / WhatsApp *</label>
+                <input type="tel" id="a_contact" required placeholder="08xxxxxxxx">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="a_cat">Kategori Kebutuhan Bantuan Hukum *</label>
+              <select id="a_cat">
+                <option value="Perlindungan Hak Buruh / Upah Kerja">Perlindungan Hak Buruh / Upah Kerja</option>
+                <option value="Sengketa Tanah Petani & Penggusuran Sepihak">Sengketa Tanah Petani &amp; Penggusuran Sepihak</option>
+                <option value="Pendampingan Saksi / Korban Pidana">Pendampingan Saksi / Korban Pidana</option>
+                <option value="Konsultasi Hukum Keluarga & KDRT">Konsultasi Hukum Keluarga &amp; KDRT</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="a_desc">Kronologi Kejadian &amp; Bentuk Bantuan Yang Diharapkan *</label>
+              <textarea id="a_desc" rows="4" required placeholder="Ceritakan duduk perkara secara jelas..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit-legal aid">
+                <i class="fa-solid fa-hand-holding-heart"></i> Ajukan Bantuan Hukum Pro Bono
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 4: Kemitraan Advokat Rekanan -->
+      <section id="tab-mitra" class="portal-tab-content">
+        <div class="section-heading">
+          <h2>Pendaftaran Rekanan Advokat &amp; Notaris</h2>
+          <p>Bergabung dalam jaringan kemitraan hukum nasional untuk penanganan perkara lintas wilayah.</p>
+        </div>
+
+        <div class="form-container-card">
+          <form id="partnershipForm" onsubmit="handlePartnershipSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="p_name">Nama Lengkap &amp; Gelar Advokat *</label>
+                <input type="text" id="p_name" required placeholder="Contoh: Denny S., S.H., M.Kn.">
+              </div>
+              <div class="form-group">
+                <label for="p_office">Nama Kantor Hukum / Law Office *</label>
+                <input type="text" id="p_office" required placeholder="Kantor Advokat...">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="p_loc">Kota &amp; Wilayah Pengadilan Praktik *</label>
+                <input type="text" id="p_loc" required placeholder="Contoh: Surabaya / Jawa Timur">
+              </div>
+              <div class="form-group">
+                <label for="p_area">Keahlian Utama *</label>
+                <input type="text" id="p_area" required placeholder="Contoh: Kurator Kepailitan, Notaris PPAT">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="p_note">Catatan Proposal Kerja Sama</label>
+              <textarea id="p_note" rows="3" placeholder="Informasi tambahan mengenai kapasitas tim atau rekam jejak kantor..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit-legal partner">
+                <i class="fa-solid fa-handshake"></i> Kirim Formulir Kemitraan
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 5: Testimoni Klien -->
+      <section id="tab-testimoni" class="portal-tab-content">
+        <div class="section-heading">
+          <h2>Rekam Jejak &amp; Testimoni Keberhasilan Perkara</h2>
+          <p>Bukti dedikasi dalam memperjuangkan hak hukum dan menyelamatkan kepentingan klien.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <h4>Sengketa Wanprestasi Pembayaran Kontrak</h4>
+            <p class="testi-summary">"Berkat mediasi tegas Pak Deny Akhbar, dana tertahan senilai Rp 1,8 Miliar berhasil dicairkan penuh tanpa harus proses persidangan panjang."</p>
+            <div class="testi-author">
+              <strong>Bapak Hendra W.</strong>
+              <span>Direktur Rekanan Pengadaan • 2026</span>
+            </div>
+          </div>
+
+          <div class="testi-card">
+            <div class="testi-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <h4>Sengketa Lahan Perkebunan &amp; Hak Milik</h4>
+            <p class="testi-summary">"Sertifikat tanah keluarga kami yang sempat disengketakan pihak luar berhasil dipertahankan secara sah di Pengadilan Negeri."</p>
+            <div class="testi-author">
+              <strong>Ibu Siti Rahmawati</strong>
+              <span>Klien Hak Agraria • 2025</span>
+            </div>
+          </div>
+
+          <div class="testi-card">
+            <div class="testi-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <h4>Perjanjian Joint Venture &amp; Retainer Hukum</h4>
+            <p class="testi-summary">"Klausul kontrak yang disusun sangat melindungi posisi usaha kami dari klausul jebakan dan denda sepihak."</p>
+            <div class="testi-author">
+              <strong>Klien Korporasi Ekspor</strong>
+              <span>Klien Retainer Terlindungi • 2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: Riwayat Pengajuan Klien Publik (Only after Public Google Sign-In) -->
+      <section id="tab-riwayat-publik" class="portal-tab-content">
+        <div class="section-heading">
+          <h2>Riwayat Pengajuan Hukum Akun Google Saya</h2>
+          <p>Seluruh permohonan konsultasi dan bantuan hukum Anda tercatat aman atas akun Google Anda.</p>
+        </div>
+        <div id="publicSubmissionsList" class="public-submissions-list"></div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <div class="container footer-content">
+        <div class="footer-col">
+          <h3>KANTOR ADVOKAT DENY AKHBAR, S.H., M.H.</h3>
+          <p>Layanan hukum kredibel, independen, dan berintegritas tinggi untuk mengawal setiap langkah kepatuhan dan keadilan Anda.</p>
+          <p class="copyright">&copy; 2026 Kantor Hukum Deny Akhbar &amp; Rekan. Seluruh hak cipta dilindungi undang-undang.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Saluran Komunikasi</h4>
+          <p><i class="fa-solid fa-envelope"></i> denyakhbar@gmail.com</p>
+          <p><i class="fa-brands fa-whatsapp"></i> +62 812-9999-0001</p>
+          <p><i class="fa-solid fa-location-dot"></i> Gedung Perkantoran Menara Hukum Lantai 8, Jakarta</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Unduh &amp; Akses</h4>
+          <button class="btn-footer-dl" onclick="downloadAndroidApk()">
+            <i class="fa-brands fa-android"></i> Unduh APK Android
+          </button>
+          <button class="btn-footer-dl" onclick="downloadIosProfile()">
+            <i class="fa-brands fa-apple"></i> Unduh Profil iOS
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VIEW 2: FULL ENTERPRISE COMPANY WORKSPACE (LAUNCHED AFTER CORPORATE LOGIN) -->
+  <!-- Dynamically populated ONLY after valid Corporate/Super-Admin login         -->
+  <!-- ========================================================================= -->
+  <div id="corporateWorkspaceView" style="display: none;"></div>
+
+  <!-- ========================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================= -->
+
+  <!-- Download Modal -->
+  <div id="downloadModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-icon"><i class="fa-solid fa-download"></i></div>
+        <div>
+          <h3>Unduh &amp; Pasang Aplikasi</h3>
+          <p>Pilih sistem operasi smartphone Anda untuk mulai mengunduh</p>
+        </div>
+        <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="download-cards-modal">
+          <div class="dl-option-card">
+            <div class="dl-opt-icon android"><i class="fa-brands fa-android"></i></div>
+            <div class="dl-opt-info">
+              <h4>Aplikasi Android Resmi (.APK)</h4>
+              <p>Paket instalasi Android asli &amp; tertandatangani (<code>com.aistudio.multicorp.xptqvk</code>), langsung masuk ke folder <code>Download/</code>.</p>
+              <span class="file-spec">Ukuran: ~23 MB • Android 7.0+ (API 24–36) • Signed APK</span>
+            </div>
+            <a href="/downloads/DAR_MultiCorp_Installer.apk" download="DAR_MultiCorp_Installer.apk" class="btn-opt-dl" onclick="onApkAnchorClick(event)" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-download"></i> Unduh APK
+            </a>
+          </div>
+
+          <div class="dl-option-card">
+            <div class="dl-opt-icon pwa"><i class="fa-solid fa-bolt"></i></div>
+            <div class="dl-opt-info">
+              <h4>Pasang Instan di Android (WebAPK / PWA)</h4>
+              <p>Pemasangan cepat langsung dari Google Chrome ke layar utama tanpa perlu izin sumber tak dikenal.</p>
+              <span class="file-spec">Android Chrome / Edge • Ringan &amp; Otomatis Update</span>
+            </div>
+            <button id="btnPwaInstallModal" type="button" class="btn-opt-dl pwa" onclick="installAndroidPwa()">
+              <i class="fa-solid fa-mobile-screen-button"></i> Pasang PWA
+            </button>
+          </div>
+
+          <div class="dl-option-card">
+            <div class="dl-opt-icon apple"><i class="fa-brands fa-apple"></i></div>
+            <div class="dl-opt-info">
+              <h4>Aplikasi iPhone / iPad (iOS)</h4>
+              <p>Profil WebClip / Progressive Web App siap pasang di layar utama iPhone.</p>
+              <span class="file-spec">iOS 14.0+ • Safari Ready</span>
+            </div>
+            <button class="btn-opt-dl ios" onclick="downloadIosProfile()">
+              <i class="fa-solid fa-download"></i> Pasang di iOS
+            </button>
+          </div>
+        </div>
+
+        <div class="install-guide-box">
+          <h4><i class="fa-solid fa-circle-info"></i> Panduan Pemasangan di Perangkat Android &amp; iOS:</h4>
+          <ol>
+            <li><strong>Pemasangan File .APK (Android):</strong> Buka aplikasi <em>File Manager / Unduhan</em> &rarr; Folder <em>Download</em> &rarr; Ketuk <code>DAR_MultiCorp_Installer.apk</code>. Jika muncul peringatan keamanan Chrome/Android, ketuk <em>Setelan &rarr; Izinkan dari sumber ini</em>, lalu tekan <em>Instal</em>.</li>
+            <li><strong>Jika Muncul Peringatan Play Protect:</strong> Ketuk <em>Detail selengkapnya</em> &rarr; pilih <em>Tetap instal</em> (aplikasi menggunakan sertifikat pengembang mandiri resmi).</li>
+            <li><strong>Untuk iPhone / iPad:</strong> Buka situs ini melalui <em>Safari</em> &rarr; Ketuk tombol <em>Bagikan (Share)</em> &rarr; Pilih <em>Tambah ke Layar Utama</em> atau pasang Profil <code>.mobileconfig</code> di Pengaturan.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Public Google Sign-In Modal -->
+  <div id="publicLoginModal" class="modal-backdrop">
+    <div class="modal-card login">
+      <div class="modal-header">
+        <div class="modal-header-icon google"><i class="fa-brands fa-google"></i></div>
+        <div>
+          <h3>Login Publik dengan Akun Google</h3>
+          <p>Khusus Klien &amp; Pengunjung Layanan Hukum (Privasi Terjaga)</p>
+        </div>
+        <button class="modal-close" onclick="closePublicLoginModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="public-login-info">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Masuk dengan akun Google Anda agar riwayat konsultasi hukum, bantuan pro bono, dan jadwal pertemuan tersimpan aman. Data perusahaan mitra tetap dirahasiakan.</span>
+        </div>
+
+        <button type="button" class="btn-google-oauth-big" onclick="triggerGoogleSignIn('PUBLIC')">
+          <i class="fa-brands fa-google"></i> Lanjutkan dengan Akun Google (OAuth)
+        </button>
+
+        <div class="or-divider"><span>atau verifikasi cepat akun Google Anda</span></div>
+
+        <form id="publicGoogleFallbackForm" onsubmit="handlePublicGoogleFallbackSubmit(event)">
+          <div class="form-group">
+            <label for="pub_google_name">Nama Lengkap Sesuai Akun Google *</label>
+            <input type="text" id="pub_google_name" required placeholder="Contoh: Budi Santoso">
+          </div>
+          <div class="form-group">
+            <label for="pub_google_email">Alamat Email Google (@gmail.com) *</label>
+            <input type="email" id="pub_google_email" required placeholder="namaanda@gmail.com">
+          </div>
+          <button type="submit" class="btn-submit-legal" style="width:100%;">
+            <i class="fa-solid fa-right-to-bracket"></i> Masuk Portal Hukum Publik
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Corporate Login Modal (Launches Full Company Workspace) -->
+  <div id="corpLoginModal" class="modal-backdrop">
+    <div class="modal-card login">
+      <div class="modal-header">
+        <div class="modal-header-icon corp"><i class="fa-solid fa-lock"></i></div>
+        <div>
+          <h3>Masuk Portal Perusahaan</h3>
+          <p>Admin Utama (denyakhbar@gmail.com), Direksi, &amp; Karyawan</p>
+        </div>
+        <button class="modal-close" onclick="closeCorpLoginModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="corp-login-warning">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Setelah kata sandi terverifikasi, Anda akan langsung diluncurkan ke Laman Perusahaan Lengkap beserta seluruh menu dan pengaturannya.</span>
+        </div>
+
+        <button type="button" class="btn-google-oauth-big corp" onclick="triggerGoogleSignIn('CORPORATE')">
+          <i class="fa-brands fa-google"></i> Pilih Akun Google Untuk Masuk Perusahaan
+        </button>
+
+        <div class="or-divider"><span>masukkan email &amp; kata sandi akses</span></div>
+
+        <form id="corpLoginForm" onsubmit="handleCorpLogin(event)">
+          <div class="form-group">
+            <label for="corp_user">Akun Email Google / Perusahaan *</label>
+            <input type="email" id="corp_user" required placeholder="denyakhbar@gmail.com atau email@perusahaan.co.id">
+          </div>
+          <div class="form-group">
+            <label for="corp_pin">Kata Sandi / PIN Kredensial *</label>
+            <input type="password" id="corp_pin" required placeholder="Masukkan kata sandi akses">
+          </div>
+          <div id="corpLoginError" class="corp-login-error" style="display:none;"></div>
+          <button type="submit" class="btn-submit-corp-login">
+            <i class="fa-solid fa-right-to-bracket"></i> Verifikasi &amp; Luncurkan Laman Perusahaan
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast / Notification -->
+  <div id="toastNotification" class="toast-box">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage">Pesan berhasil dikirim</span>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

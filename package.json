@@ -1,0 +1,9 @@
+{
+  "name": "dar-multicorp-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DAR MultiCorp and Law Office of Deny Akhbar, S.H., M.H.",
+  "scripts": {
+    "build": "echo 'Static web assets in /web are verified and ready for Vercel deployment'"
+  }
+}

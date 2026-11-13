@@ -1,0 +1,20 @@
+{
+  "name": "dar-multicorp-legal-portal",
+  "version": "1.0.0",
+  "description": "Kantor Advokat & Konsultan Hukum Deny Akhbar, S.H., M.H. & Portal Multi-Perusahaan DAR MultiCorp",
+  "scripts": {
+    "build": "echo 'Static web assets ready'",
+    "start": "serve .",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "advokat",
+    "konsultan-hukum",
+    "bantuan-hukum",
+    "multicorp",
+    "legal",
+    "lawyer"
+  ],
+  "author": "Deny Akhbar, S.H., M.H.",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>FullScreen</key>
+      <true/>
+      <key>Icon</key>
+      <data></data>
+      <key>IsRemovable</key>
+      <true/>
+      <key>Label</key>
+      <string>Advokat Deny Akhbar</string>
+      <key>PayloadDescription</key>
+      <string>Konfigurasi WebClip Portal Hukum &amp; Multi Perusahaan DAR MultiCorp</string>
+      <key>PayloadDisplayName</key>
+      <string>Portal Advokat Deny Akhbar</string>
+      <key>PayloadIdentifier</key>
+      <string>com.dar.multicorp.ios.webclip</string>
+      <key>PayloadType</key>
+      <string>com.apple.webClip.managed</string>
+      <key>PayloadUUID</key>
+      <string>A51B7894-3990-4B1C-B738-910D4CEF1234</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>Precomposed</key>
+      <true/>
+      <key>URL</key>
+      <string>https://dar-multicorp.vercel.app</string>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key>
+  <string>Advokat Deny Akhbar iOS Profile</string>
+  <key>PayloadIdentifier</key>
+  <string>com.dar.multicorp.profile</string>
+  <key>PayloadOrganization</key>
+  <string>Kantor Hukum Deny Akhbar &amp; Rekan</string>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>C849204A-579B-4DCE-9F40-8472B5634567</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>

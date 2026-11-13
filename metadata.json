@@ -1,0 +1,6 @@
+{
+  "name": "DAR MultiCorp",
+  "description": "Aplikasi Multi Perusahaan dengan Ruang Kerja Terpisah, Manajemen Karyawan, Presensi GPS, Payroll, Plugin Ekstensi, dan Pengaturan Menu Kustom",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
